@@ -1,0 +1,25 @@
+{
+  "name": "git",
+  "version": "1.0.0",
+  "description": "git 脚本 快捷操作",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "merge": "node ./merge.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangxin9527/git.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yangxin9527/git/issues"
+  },
+  "homepage": "https://github.com/yangxin9527/git#readme",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "simple-git": "^2.48.0"
+  }
+}
