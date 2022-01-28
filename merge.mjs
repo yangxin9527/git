@@ -2,16 +2,25 @@ import simpleGit from "simple-git";
 import chalk from "chalk";
 import fs from "fs";
 import path from "path";
+const fsPromise  = fs.promises 
 const log = console.log;
 const gitBaseUrl = "../we-work-webapp-new";
-const baseBranch = "test-v21.53.1";
-const targetBranch = "yx/feature-wb-8458-project-add-file-type";
-// const targetBranch = "yx/feature-wb-6271-service-merge";
+// const baseBranch = "test-v22.5";
+const baseBranch = "dev-v22.5";
+// const baseBranch = "custom-yx-test-v22.2";
+// const baseBranch = "custom-cjh-test-v22.4.3";
+const targetBranch = "quanhai/feature-input-keyboard";
+
+// const targetBranch = "yx/feature-WBZJ-61-round-three-marketing"; 
+
+// const targetBranch = "xsp/feature-wb-9110"; 
+// const targetBranch = "quanhai/polish-WB-9328-empty"; 
+
 async function main() {
-  log(chalk.green("开始"));
+  // log(chalk.green("开始"));
   try {
     const git = simpleGit(path.resolve(gitBaseUrl));
-    await git.pull("origin");
+    // await git.pull("origin");
     await git.checkout(baseBranch);
     await git.pull("origin", baseBranch);
     let mergeSuccess = true;
@@ -27,21 +36,17 @@ async function main() {
         new Set([...statusResult.conflicted, ...["assets-url-map", "assets-rev"]])
           .size === 2
       ) {
-        ["assets-url-map", "assets-rev"].map((file) => {
+        await ["assets-url-map", "assets-rev"].map(async(file) => {
             const txtPath = path.resolve(`${gitBaseUrl}/${file}`);
-            fs.readFile(txtPath, "utf8", function (err, data) {
-              if (err) {
-                return console.log(err);
-              }
-              let result = data.replace(/<<<<<<<.*[\r\n]/g, "");
-              result = result.replace(/=======.*[\r\n]/g, "");
-              result = result.replace(/>>>>>>>.*[\r\n]/g, "");
-              fs.writeFile(txtPath, result, "utf8", function (err) {
-                if (err) return console.log(err);
-              });
-            });
+            let data = await fsPromise.readFile(txtPath, "utf8");
+            let result = data.replace(/<<<<<<<.*[\r\n]/g, "");
+            result = result.replace(/=======.*[\r\n]/g, "");
+            result = result.replace(/>>>>>>>.*[\r\n]/g, "");
+            await fsPromise.writeFile(txtPath, result, "utf8");
+            console.log('文件合并完成')
         });
-        git
+        console.log('git add')
+        await git
           .add(statusResult.conflicted)
           .commit(`Merge branch ${targetBranch} into ${baseBranch}`);
       } else {
@@ -49,8 +54,10 @@ async function main() {
       }
     }
     if (mergeSuccess) {
-      await git.push("origin", baseBranch);
-      log(chalk.green("成功"));
+      await setTimeout(async()=>{
+        await git.push("origin", baseBranch);
+      },2000)
+      log(chalk.green("git push"));
     } else {
       log(chalk.red("======merge失败======"));
     }
