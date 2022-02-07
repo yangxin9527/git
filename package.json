@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "merge": "node ./merge.mjs",
+    "merge": "zx ./scripts.mjs",
+    "merge2": "node ./merge.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
